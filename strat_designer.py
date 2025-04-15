@@ -16,10 +16,10 @@ tiempo_boxes = st.number_input("Tiempo de parada en boxes (s)", min_value=0.0, s
 vueltas_totales = st.number_input("Número total de vueltas de carrera", min_value=1, step=1)
 
 # Entrada de stints
-st.header("Definición de estrategia (hasta 6 stints)")
+st.header("Definición de estrategia (hasta 5 stints)")
 
 stints = []
-for i in range(6):
+for i in range(5):
     col1, col2 = st.columns(2)
     with col1:
         tipo = st.selectbox(f"Neumático stint {i+1}", [""] + compuestos, key=f"tipo_{i}")
