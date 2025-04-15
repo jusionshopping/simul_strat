@@ -64,9 +64,16 @@ circuito = st.selectbox("Selecciona el circuito", list(circuitos.keys()))
 # Seleccionar fecha
 fecha = st.date_input("Selecciona la fecha", min_value=datetime.today())
 
-# Mantener la hora seleccionada por el usuario y no resetearla
-hora_default = datetime.now().time()
-hora = st.time_input("Selecciona la hora", value=hora_default)
+# Usar `session_state` para recordar la hora seleccionada
+if "hora" not in st.session_state:
+    st.session_state.hora = datetime.now().time()  # Valor por defecto: hora actual
+
+# Hora seleccionada por el usuario
+hora = st.time_input("Selecciona la hora", value=st.session_state.hora)
+
+# Almacenar la hora seleccionada en `session_state`
+if hora != st.session_state.hora:
+    st.session_state.hora = hora
 
 # Obtener los datos del clima al hacer clic en el botón
 if st.button("Ver clima"):
