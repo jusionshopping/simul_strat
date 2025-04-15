@@ -64,8 +64,9 @@ circuito = st.selectbox("Selecciona el circuito", list(circuitos.keys()))
 # Seleccionar fecha
 fecha = st.date_input("Selecciona la fecha", min_value=datetime.today())
 
-# Seleccionar hora (hora de la pista, en formato de 24h)
-hora = st.time_input("Selecciona la hora", value=datetime.now().time())
+# Mantener la hora seleccionada por el usuario y no resetearla
+hora_default = datetime.now().time()
+hora = st.time_input("Selecciona la hora", value=hora_default)
 
 # Obtener los datos del clima al hacer clic en el botón
 if st.button("Ver clima"):
