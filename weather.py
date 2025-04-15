@@ -49,11 +49,32 @@ def obtener_prevision_futura(lat, lon, fecha, hora):
 
 # Mapa de circuitos con sus coordenadas
 circuitos = {
-    "Circuito de Spa-Francorchamps": {"lat": 50.4375, "lon": 5.9722},
-    "Circuito de Monza": {"lat": 45.6150, "lon": 9.2811},
-    "Circuito de Silverstone": {"lat": 52.0784, "lon": -1.0156},
-    "Circuito de Barcelona-Cataluña": {"lat": 41.57, "lon": 2.2617}
+    "Australia (Melbourne)": {"lat": -37.8497, "lon": 144.9680},
+    "Malasia (Sepang)": {"lat": 2.7608, "lon": 101.7382},
+    "China (Shanghai)": {"lat": 31.3389, "lon": 121.2197},
+    "Baréin (Sakhir)": {"lat": 26.0325, "lon": 50.5106},
+    "España (Barcelona)": {"lat": 41.57, "lon": 2.2617},
+    "Mónaco (Monte Carlo)": {"lat": 43.7347, "lon": 7.4206},
+    "Turquía (Estambul)": {"lat": 40.9517, "lon": 29.4050},
+    "Reino Unido (Silverstone)": {"lat": 52.0784, "lon": -1.0156},
+    "Alemania (Hockenheim)": {"lat": 49.3278, "lon": 8.5658},
+    "Hungría (Budapest)": {"lat": 47.5789, "lon": 19.2486},
+    "Europa (Valencia)": {"lat": 39.4589, "lon": -0.3319},
+    "Bélgica (Spa-Francorchamps)": {"lat": 50.4375, "lon": 5.9722},
+    "Italia (Monza)": {"lat": 45.6150, "lon": 9.2811},
+    "Singapur (Marina Bay)": {"lat": 1.2914, "lon": 103.8643},
+    "Japón (Suzuka)": {"lat": 34.8431, "lon": 136.5419},
+    "Brasil (Interlagos)": {"lat": -23.7036, "lon": -46.6997},
+    "Abu Dabi (Yas Marina)": {"lat": 24.4672, "lon": 54.6031},
+    "Francia (Paul Ricard)": {"lat": 43.2500, "lon": 5.7917},
+    "Austria (Red Bull Ring)": {"lat": 47.2197, "lon": 14.7647},
+    "Canadá (Montreal)": {"lat": 45.5000, "lon": -73.5228},
+    "Azerbaiyán (Bakú)": {"lat": 40.3725, "lon": 49.8533},
+    "México (Ciudad de México)": {"lat": 19.4042, "lon": -99.0907},
+    "Rusia (Sochi)": {"lat": 43.4057, "lon": 39.9578},
+    "Estados Unidos (Austin)": {"lat": 30.1328, "lon": -97.6411}
 }
+
 
 # Interfaz en Streamlit
 st.title("🌤️ Clima de Circuitos de F1")
