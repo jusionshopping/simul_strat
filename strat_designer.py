@@ -29,7 +29,7 @@ for i in range(6):
         stints.append((tipo, vueltas))
 
 # Cálculos
-if st.button("Calcular estrategia"):
+if st.button("🚀 Calcular estrategia"):
     total_tiempo = 0
     vueltas_acumuladas = 0
 
