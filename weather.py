@@ -86,14 +86,21 @@ if st.button("Ver clima"):
 
     if clima:
         # Extraer solo los datos de la temperatura y lluvia para esa hora
-        for hora_data in clima['list']:
-            timestamp = hora_data['dt']
-            if timestamp == int(datetime.combine(fecha, hora).timestamp()):
-                temperatura = hora_data['main']['temp']  # Temperatura en °C
-                lluvia = hora_data.get('rain', {}).get('1h', 0)  # Lluvia en mm en la última hora
+        from datetime import timezone
+        
+        # Hora deseada como timestamp UTC (la API trabaja en UTC)
+        hora_deseada = int(datetime.combine(fecha, hora).replace(tzinfo=timezone.utc).timestamp())
+        
+        # Buscar la entrada más cercana en las próximas 5 días
+        entrada_mas_cercana = min(clima['list'], key=lambda x: abs(x['dt'] - hora_deseada))
+        
+        temperatura = entrada_mas_cercana['main']['temp']
+        lluvia = entrada_mas_cercana.get('rain', {}).get('3h', 0)  # porque es lluvia acumulada en 3 horas
+        
+        hora_forecast = datetime.utcfromtimestamp(entrada_mas_cercana['dt']).strftime("%d-%m-%Y %H:%M")
+        
+        st.subheader(f"Clima estimado más cercano a {fecha.strftime('%d-%m-%Y')} {hora.strftime('%H:%M')} UTC")
+        st.write(f"**Dato disponible a las**: {hora_forecast} UTC")
+        st.write(f"**Temperatura**: {temperatura} °C")
+        st.write(f"**Precipitación (últimas 3h)**: {lluvia} mm")
 
-                # Mostrar la información del clima
-                st.subheader(f"Clima para {circuito} el {fecha.strftime('%d-%m-%Y')} a las {hora.strftime('%H:%M')}")
-                st.write(f"**Temperatura**: {temperatura} °C")
-                st.write(f"**Precipitación (lluvia)**: {lluvia} mm")
-                break
