@@ -91,14 +91,26 @@ if st.button("🚀 Calcular estrategia"):
                 name=f"Stint {i+1}: {tipo}"  # Aquí agregamos el número del stint
             ))
 
-        fig.update_layout(
-            xaxis_title="Vuelta",
-            yaxis_title="Vida del neumático (%)",
-            yaxis=dict(range=[0, 100]),
-            template="plotly_white"
+    # Añadir la línea horizontal en el 50%
+    fig.add_shape(
+        type="line",
+        x0=0, x1=vueltas_totales,  # Desde la vuelta 0 hasta la última vuelta
+        y0=50, y1=50,  # Línea horizontal en y=50%
+        line=dict(
+            color="red",
+            width=2,
+            dash="dashdot"
         )
+    )
 
-        st.plotly_chart(fig, use_container_width=True)
+    fig.update_layout(
+        xaxis_title="Vuelta",
+        yaxis_title="Vida del neumático (%)",
+        yaxis=dict(range=[0, 100]),
+        template="plotly_white"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
 
     if vueltas_acumuladas < vueltas_totales:
         st.warning(f"Aún faltan {vueltas_totales - vueltas_acumuladas} vueltas por asignar.")
