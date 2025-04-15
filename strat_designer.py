@@ -1,4 +1,5 @@
 import streamlit as st
+import plotly.graph_objects as go
 
 st.title("✏️ Diseñador de Estrategia")
 
@@ -38,6 +39,7 @@ if st.button("🚀 Calcular estrategia"):
     vueltas_acumuladas = 0
 
     st.subheader("Resultados por stint")
+    vidas_por_stint = []  # [(stint_index, vuelta_global, vida)]
     for i, (tipo, vueltas) in enumerate(stints):
         if vueltas_acumuladas + vueltas > vueltas_totales:
             st.error(f"Te has pasado de vueltas en el stint {i+1}. Máximo permitido: {vueltas_totales - vueltas_acumuladas}")
@@ -47,6 +49,27 @@ if st.button("🚀 Calcular estrategia"):
         degradacion = degradaciones[tipo] / 100
         vida_neumatico = 100
         tiempo_stint = 0
+        
+    if vidas_por_stint:
+    st.subheader("📈 Vida del neumático por vuelta")
+
+    fig = go.Figure()
+
+    # Agrupar por stint
+    for stint_num in set(s[0] for s in vidas_por_stint):
+        vueltas = [v for s, v, vida in vidas_por_stint if s == stint_num]
+        vidas = [vida for s, v, vida in vidas_por_stint if s == stint_num]
+        fig.add_trace(go.Scatter(x=vueltas, y=vidas, mode='lines+markers', name=f'Stint {stint_num}'))
+
+    fig.update_layout(
+        xaxis_title='Vuelta',
+        yaxis_title='Vida del neumático (%)',
+        yaxis_range=[0, 100],
+        template='plotly_dark'
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
 
         for v in range(vueltas):
             if vida_neumatico < 50:
@@ -59,6 +82,9 @@ if st.button("🚀 Calcular estrategia"):
 
             vida_neumatico -= vida_neumatico * degradacion
             vida_neumatico = max(vida_neumatico, 0)
+
+            vuelta_global = vueltas_acumuladas + v + 1  # Contador global de vueltas
+            vidas_por_stint.append((i + 1, vuelta_global, vida_neumatico))
 
         total_tiempo += tiempo_stint
         if i > 0:
