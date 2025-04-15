@@ -88,7 +88,7 @@ if st.button("🚀 Calcular estrategia"):
                 x=vueltas_stint,
                 y=vidas_stint,
                 mode='lines+markers',
-                name=f"Stint {tipo}"
+                name=f"Stint {i+1}: {tipo}"
             ))
 
         fig.update_layout(
