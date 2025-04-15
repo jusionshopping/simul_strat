@@ -14,7 +14,7 @@ def duracion_neum(degrad):
         vueltas = 0
     return durac
 
-st.title("🛞 Simulación de Estrategias de Neumáticos")
+st.title("🛞 Simulación de Estrategias")
 
 st.subheader("Configuración de neumáticos")
 neum = [st.text_input(f"Neumático {i+1}", value=n) for i, n in enumerate(['SS', 'S', 'M', 'H'])]
