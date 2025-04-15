@@ -3,7 +3,7 @@ import requests
 from datetime import datetime, timedelta
 
 # Introduce tu clave API de OpenWeather aquí
-API_KEY = '04f994811920b474be6a629c1eb3a357'
+API_KEY = 'tu_api_key_aqui'
 
 # Función para obtener los datos del clima
 def obtener_clima(lat, lon, fecha, hora):
@@ -11,13 +11,34 @@ def obtener_clima(lat, lon, fecha, hora):
     fecha_hora = datetime.combine(fecha, hora)
     timestamp = int(fecha_hora.timestamp())
     
-    url = f"http://api.openweathermap.org/data/2.5/onecall/timemachine"
+    url = f"http://api.openweathermap.org/data/2.5/onecall"
     params = {
         'lat': lat,
         'lon': lon,
-        'dt': timestamp,  # Usamos el timestamp de la fecha y hora seleccionada
+        'exclude': 'current,minutely,daily,alerts',  # Excluir datos no necesarios
         'appid': API_KEY,
-        'units': 'metric'  # Para obtener la temperatura en grados Celsius
+        'units': 'metric',  # Para obtener la temperatura en grados Celsius
+    }
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        st.error("No se pudo obtener la información del clima. Intenta nuevamente.")
+        return None
+
+# Función para obtener la previsión futura (pronóstico por horas)
+def obtener_prevision_futura(lat, lon, fecha, hora):
+    # Convertir la fecha y la hora seleccionada en un timestamp
+    fecha_hora = datetime.combine(fecha, hora)
+    timestamp = int(fecha_hora.timestamp())
+
+    url = f"http://api.openweathermap.org/data/2.5/forecast"
+    params = {
+        'lat': lat,
+        'lon': lon,
+        'appid': API_KEY,
+        'units': 'metric',
+        'dt': timestamp
     }
     response = requests.get(url, params=params)
     if response.status_code == 200:
@@ -52,15 +73,19 @@ if st.button("Ver clima"):
     lat = circuitos[circuito]["lat"]
     lon = circuitos[circuito]["lon"]
 
-    # Obtener el clima de esa fecha y hora
-    clima = obtener_clima(lat, lon, fecha, hora)
+    # Obtener los datos del clima para la hora seleccionada
+    clima = obtener_prevision_futura(lat, lon, fecha, hora)
 
     if clima:
-        # Extraer solo los datos de la temperatura y lluvia
-        temperatura = clima['current']['temp']  # Temperatura en °C
-        lluvia = clima['current'].get('rain', {}).get('1h', 0)  # Lluvia en mm en la última hora
+        # Extraer solo los datos de la temperatura y lluvia para esa hora
+        for hora_data in clima['list']:
+            timestamp = hora_data['dt']
+            if timestamp == int(datetime.combine(fecha, hora).timestamp()):
+                temperatura = hora_data['main']['temp']  # Temperatura en °C
+                lluvia = hora_data.get('rain', {}).get('1h', 0)  # Lluvia en mm en la última hora
 
-        # Mostrar la información del clima
-        st.subheader(f"Clima para {circuito} el {fecha.strftime('%d-%m-%Y')} a las {hora.strftime('%H:%M')}")
-        st.write(f"**Temperatura**: {temperatura} °C")
-        st.write(f"**Precipitación (lluvia)**: {lluvia} mm")
+                # Mostrar la información del clima
+                st.subheader(f"Clima para {circuito} el {fecha.strftime('%d-%m-%Y')} a las {hora.strftime('%H:%M')}")
+                st.write(f"**Temperatura**: {temperatura} °C")
+                st.write(f"**Precipitación (lluvia)**: {lluvia} mm")
+                break
