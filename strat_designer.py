@@ -77,7 +77,7 @@ if st.button("🚀 Calcular estrategia"):
 
             tiempo_stint += tiempo_vuelta
             vidas_stint.append(vida_neumatico)
-            vueltas_stint.append(vueltas_acumuladas + v + 1)
+            vueltas_stint.append(vueltas_acumuladas + v)
             vida_neumatico *= (1 - degradacion)
         # ⬇️ Añadir un punto más: la vida del neumático después del stint
         vidas_stint.append(vida_neumatico)
