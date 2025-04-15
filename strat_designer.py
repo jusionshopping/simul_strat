@@ -112,6 +112,41 @@ if st.button("🚀 Calcular estrategia"):
 
     st.plotly_chart(fig, use_container_width=True)
 
+    # Mostrar gráfico de tiempos de cada vuelta
+    st.subheader("📈 Evolución de los tiempos por vuelta")
+
+    fig_tiempos = go.Figure()
+
+    for i, (tipo, vueltas_stint, vidas_stint) in enumerate(datos_grafico):
+        # Calculamos los tiempos por vuelta con la penalización aplicada
+        tiempos_vuelta = []
+        vida_neumatico = 100  # Inicializamos la vida del neumático
+
+        for vuelta, vida in zip(vueltas_stint, vidas_stint):
+            if vida_neumatico < 50:
+                penalizacion = 1 + (0.5 - vida_neumatico / 100)  # Penalización cuando la vida del neumático es < 50%
+                tiempo_vuelta = tiempos[tipo] * penalizacion
+            else:
+                tiempo_vuelta = tiempos[tipo]
+
+            tiempos_vuelta.append(tiempo_vuelta)
+            vida_neumatico = vida  # Actualizamos la vida del neumático
+
+        fig_tiempos.add_trace(go.Scatter(
+            x=vueltas_stint,
+            y=tiempos_vuelta,
+            mode='lines+markers',
+            name=f"Stint {i+1}: {tipo}"
+        ))
+
+    fig_tiempos.update_layout(
+        xaxis_title="Vuelta",
+        yaxis_title="Tiempo por vuelta (s)",
+        template="plotly_white"
+    )
+
+    st.plotly_chart(fig_tiempos, use_container_width=True)
+
     if vueltas_acumuladas < vueltas_totales:
         st.warning(f"Aún faltan {vueltas_totales - vueltas_acumuladas} vueltas por asignar.")
     elif vueltas_acumuladas > vueltas_totales:
