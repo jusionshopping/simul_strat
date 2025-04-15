@@ -105,8 +105,11 @@ if 'datos_grafico' in locals():
 
     for i, (tipo, vueltas_stint, vidas_stint) in enumerate(datos_grafico):
         # Ajustar las vueltas para que comiencen desde la vuelta actual
-        vueltas_continuas = list(range(vuelta_global, vuelta_global + len(vueltas_stint)))
-        vuelta_global = vueltas_continuas[-1]  # La siguiente empezará en la misma vuelta final del stint actual
+        vueltas_continuas = list(range(vuelta_global, vuelta_global + len(vidas_stint)))
+        # Añadimos una vuelta más para representar la vida tras la última vuelta del stint
+        vueltas_continuas.append(vueltas_continuas[-1] + 1)
+        vuelta_global = vueltas_continuas[-1]
+
 
         fig.add_trace(go.Scatter(
             x=vueltas_continuas,
