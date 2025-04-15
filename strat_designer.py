@@ -26,18 +26,28 @@ vueltas = st.number_input(f"Vueltas stint {i+1}", min_value=0, max_value=max_vue
 st.header("Ajuste de penalización")
 penalizacion_max = st.slider("Penalización máxima cuando la vida del neumático < 50%", 1.0, 2.0, 1.5, 0.1)
 
-# Entrada de stints
-st.header("Definición de estrategia (hasta 5 stints)")
+# Entrada de stints solo si vueltas_totales tiene valor
+if vueltas_totales > 0:
+    st.header("Definición de estrategia (hasta 5 stints)")
 
-stints = []
-for i in range(5):
-    col1, col2 = st.columns(2)
-    with col1:
-        tipo = st.selectbox(f"Neumático stint {i+1}", [""] + compuestos, key=f"tipo_{i}")
-    with col2:
-        vueltas = st.number_input(f"Vueltas stint {i+1}", min_value=0, max_value=vueltas_totales, step=1, key=f"vueltas_{i}")
-    if tipo and vueltas > 0:
-        stints.append((tipo, vueltas))
+    stints = []
+    for i in range(5):
+        col1, col2 = st.columns(2)
+        with col1:
+            tipo = st.selectbox(f"Neumático stint {i+1}", [""] + compuestos, key=f"tipo_{i}")
+        with col2:
+            vueltas = st.number_input(
+                f"Vueltas stint {i+1}",
+                min_value=0,
+                max_value=vueltas_totales,
+                step=1,
+                key=f"vueltas_{i}"
+            )
+        if tipo and vueltas > 0:
+            stints.append((tipo, vueltas))
+else:
+    st.warning("Introduce primero el número total de vueltas para configurar la estrategia.")
+
 
 # Cálculos
 if st.button("🚀 Calcular estrategia"):
