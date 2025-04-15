@@ -96,25 +96,30 @@ if st.button("🚀 Calcular estrategia"):
         st.write(f"🕒 Tiempo del stint: {tiempo_stint:.2f} s")
         st.write(f"🔋 Vida restante del neumático: {vida_neumatico:.2f} %")
     
-    # Mostrar gráfico de vida de neumáticos
-    if 'datos_grafico' in locals():
-        st.subheader("📉 Evolución de la vida del neumático")
+# Mostrar gráfico de vida de neumáticos
+if 'datos_grafico' in locals():
+    st.subheader("📉 Evolución de la vida del neumático")
 
-        fig = go.Figure()
+    fig = go.Figure()
+    vuelta_global = 0  # Para que las vueltas sean continuas entre stints
 
-        for i, (tipo, vueltas_stint, vidas_stint) in enumerate(datos_grafico):
-            fig.add_trace(go.Scatter(
-                x=vueltas_stint,
-                y=vidas_stint,
-                mode='lines+markers',
-                name=f"Stint {i+1}: {tipo}"  # Aquí agregamos el número del stint
-            ))
+    for i, (tipo, vueltas_stint, vidas_stint) in enumerate(datos_grafico):
+        # Ajustar las vueltas para que comiencen desde la vuelta actual
+        vueltas_continuas = list(range(vuelta_global, vuelta_global + len(vueltas_stint)))
+        vuelta_global = vueltas_continuas[-1]  # La siguiente empezará en la misma vuelta final del stint actual
+
+        fig.add_trace(go.Scatter(
+            x=vueltas_continuas,
+            y=vidas_stint,
+            mode='lines+markers',
+            name=f"Stint {i+1}: {tipo}"
+        ))
 
     # Añadir la línea horizontal en el 50%
     fig.add_shape(
         type="line",
-        x0=0, x1=vueltas_totales,  # Desde la vuelta 0 hasta la última vuelta
-        y0=50, y1=50,  # Línea horizontal en y=50%
+        x0=0, x1=vuelta_global,
+        y0=50, y1=50,
         line=dict(
             color="red",
             width=2,
@@ -130,6 +135,7 @@ if st.button("🚀 Calcular estrategia"):
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
 
     if vueltas_acumuladas < vueltas_totales:
         st.warning(f"Aún faltan {vueltas_totales - vueltas_acumuladas} vueltas por asignar.")
