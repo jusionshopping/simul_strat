@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("Simulador de Estrategia de Carrera - F1")
+st.title("✏️ Diseñador de Estrategia")
 
 # Entrada de parámetros generales
 st.header("Parámetros generales")
