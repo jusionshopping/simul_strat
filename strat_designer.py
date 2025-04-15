@@ -83,12 +83,12 @@ if st.button("🚀 Calcular estrategia"):
 
         fig = go.Figure()
 
-        for tipo, vueltas_stint, vidas_stint in datos_grafico:
+        for i, (tipo, vueltas_stint, vidas_stint) in enumerate(datos_grafico):
             fig.add_trace(go.Scatter(
                 x=vueltas_stint,
                 y=vidas_stint,
                 mode='lines+markers',
-                name=f"Stint {i+1}: {tipo}"
+                name=f"Stint {i+1}: {tipo}"  # Aquí agregamos el número del stint
             ))
 
         fig.update_layout(
