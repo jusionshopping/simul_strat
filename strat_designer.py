@@ -20,7 +20,7 @@ st.header("Ajuste de penalización")
 penalizacion_max = st.slider("Penalización máxima cuando la vida del neumático < 50%", 1.0, 2.0, 1.5, 0.1)
 
 # Entrada de stints
-st.header("Definición de estrategia (hasta 6 stints)")
+st.header("Definición de estrategia (hasta 5 stints)")
 
 stints = []
 for i in range(5):
