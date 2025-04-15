@@ -3,7 +3,7 @@ import requests
 from datetime import datetime, timedelta
 
 # Introduce tu clave API de OpenWeather aquí
-API_KEY = 'tu_api_key_aqui'
+API_KEY = '04f994811920b474be6a629c1eb3a357'
 
 # Función para obtener los datos del clima
 def obtener_clima(lat, lon, fecha, hora):
