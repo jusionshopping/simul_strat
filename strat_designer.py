@@ -76,6 +76,29 @@ if st.button("🚀 Calcular estrategia"):
         st.markdown(f"**Stint {i+1}: {tipo} - {vueltas} vueltas**")
         st.write(f"🕒 Tiempo del stint: {tiempo_stint:.2f} s")
         st.write(f"🔋 Vida restante del neumático: {vida_neumatico:.2f} %")
+    
+    # Mostrar gráfico de vida de neumáticos
+    if 'datos_grafico' in locals():
+        st.subheader("📉 Evolución de la vida del neumático")
+
+        fig = go.Figure()
+
+        for tipo, vueltas_stint, vidas_stint in datos_grafico:
+            fig.add_trace(go.Scatter(
+                x=vueltas_stint,
+                y=vidas_stint,
+                mode='lines+markers',
+                name=f"Stint {tipo}"
+            ))
+
+        fig.update_layout(
+            xaxis_title="Vuelta",
+            yaxis_title="Vida del neumático (%)",
+            yaxis=dict(range=[0, 100]),
+            template="plotly_white"
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
 
     if vueltas_acumuladas < vueltas_totales:
         st.warning(f"Aún faltan {vueltas_totales - vueltas_acumuladas} vueltas por asignar.")
