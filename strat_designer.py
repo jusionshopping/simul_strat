@@ -14,7 +14,13 @@ for c in compuestos:
     degradaciones[c] = st.number_input(f"Degradación por vuelta con {c} (%)", min_value=0, max_value=100, step=1)
 
 tiempo_boxes = st.number_input("Tiempo de parada en boxes (s)", min_value=0.0, step=0.1)
-vueltas_totales = st.number_input("Número total de vueltas de carrera", min_value=1, step=1)
+if vueltas_totales:
+    max_vueltas = vueltas_totales
+else:
+    max_vueltas = 100  # un valor por defecto mientras no se haya definido
+
+vueltas = st.number_input(f"Vueltas stint {i+1}", min_value=0, max_value=max_vueltas, step=1, key=f"vueltas_{i}")
+
 
 # Penalización por degradación alta
 st.header("Ajuste de penalización")
