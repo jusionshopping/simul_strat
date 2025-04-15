@@ -1,4 +1,5 @@
 import streamlit as st
+import plotly.graph_objects as go
 
 st.title("✏️ Diseñador de Estrategia")
 
@@ -44,7 +45,9 @@ if st.button("🚀 Calcular estrategia"):
 
         vida_neumatico = 100
         tiempo_stint = 0
-
+        vidas_stint = []
+        vueltas_stint = []
+    
         for _ in range(vueltas):
             # Aplicar penalización solo si la vida del neumático está por debajo del 50%
             if vida_neumatico < 50:
@@ -54,8 +57,16 @@ if st.button("🚀 Calcular estrategia"):
                 tiempo_vuelta = tiempo_vuelta_base
 
             tiempo_stint += tiempo_vuelta
+            vidas_stint.append(vida_neumatico)
+            vueltas_stint.append(vueltas_acumuladas + v + 1)
             vida_neumatico *= (1 - degradacion)
+            
+        # Acumula datos para el gráfico
+        if 'datos_grafico' not in locals():
+            datos_grafico = []
 
+        datos_grafico.append((tipo, vueltas_stint, vidas_stint))
+    
         total_tiempo += tiempo_stint
         if i > 0:
             total_tiempo += tiempo_boxes
