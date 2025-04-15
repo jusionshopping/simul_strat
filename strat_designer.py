@@ -16,6 +16,19 @@ for c in compuestos:
 tiempo_boxes = st.number_input("Tiempo de parada en boxes (s)", min_value=0.0, step=0.1)
 vueltas_totales = st.number_input("Número total de vueltas de carrera", min_value=1, step=1)
 
+# Condición de lluvia
+es_lluvia = st.checkbox("¿Carrera en lluvia?", value=False)
+
+# Si es en lluvia, añadir neumáticos personalizados
+tiempos_personalizados = {}
+degradaciones_personalizados = {}
+
+if es_lluvia:
+    st.subheader("Neumáticos personalizados (Lluvia)")
+    for c in ["I (Intermedios)", "W (Mojados)"]:
+        tiempos_personalizados[c] = st.number_input(f"Tiempo por vuelta con {c}", min_value=50.0, max_value=200.0, step=0.1)
+        degradaciones_personalizados[c] = st.number_input(f"Degradación por vuelta con {c} (%)", min_value=0, max_value=100, step=0)
+
 # Entrada de stints
 st.header("Definición de estrategia (hasta 5 stints)")
 
@@ -23,7 +36,7 @@ stints = []
 for i in range(5):
     col1, col2 = st.columns(2)
     with col1:
-        tipo = st.selectbox(f"Neumático stint {i+1}", [""] + compuestos, key=f"tipo_{i}")
+        tipo = st.selectbox(f"Neumático stint {i+1}", [""] + compuestos + (["I (Intermedios)", "W (Mojados)"] if es_lluvia else []), key=f"tipo_{i}")
     with col2:
         vueltas = st.number_input(f"Vueltas stint {i+1}", min_value=0, max_value=vueltas_totales, step=1, key=f"vueltas_{i}")
     if tipo and vueltas > 0:
@@ -35,13 +48,19 @@ if st.button("🚀 Calcular estrategia"):
     vueltas_acumuladas = 0
 
     st.subheader("Resultados por stint")
+    
     for i, (tipo, vueltas) in enumerate(stints):
         if vueltas_acumuladas + vueltas > vueltas_totales:
             st.error(f"Te has pasado de vueltas en el stint {i+1}. Máximo permitido: {vueltas_totales - vueltas_acumuladas}")
             break
 
-        tiempo_vuelta_base = tiempos[tipo]
-        degradacion = degradaciones[tipo] / 100
+        # Aquí es donde seleccionamos el tiempo y la degradación dependiendo del tipo de neumático
+        if tipo in tiempos:  # Neumáticos estándar
+            tiempo_vuelta_base = tiempos[tipo]
+            degradacion = degradaciones[tipo] / 100
+        elif tipo in tiempos_personalizados:  # Neumáticos personalizados
+            tiempo_vuelta_base = tiempos_personalizados[tipo]
+            degradacion = degradaciones_personalizados[tipo] / 100
 
         vida_neumatico = 100
         tiempo_stint = 0
