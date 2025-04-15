@@ -48,7 +48,7 @@ if st.button("🚀 Calcular estrategia"):
         vidas_stint = []
         vueltas_stint = []
     
-        for _ in range(vueltas):
+        for v in range(vueltas):
             # Aplicar penalización solo si la vida del neumático está por debajo del 50%
             if vida_neumatico < 50:
                 penalizacion = 1 + (0.5 - vida_neumatico / 100)  # escala de 1 a 1.5
