@@ -96,42 +96,25 @@ if st.button("🚀 Calcular estrategia"):
         st.write(f"🕒 Tiempo del stint: {tiempo_stint:.2f} s")
         st.write(f"🔋 Vida restante del neumático: {vida_neumatico:.2f} %")
     
-# Mostrar gráfico de vida de neumáticos
-if 'datos_grafico' in locals():
-    st.subheader("📉 Evolución de la vida del neumático")
+    # Mostrar gráfico de vida de neumáticos
+    if 'datos_grafico' in locals():
+        st.subheader("📉 Evolución de la vida del neumático")
 
-    fig = go.Figure()
-    vuelta_actual = 0
+        fig = go.Figure()
 
-    for i, (tipo, vueltas_stint, _) in enumerate(datos_grafico):
-        vida_neumatico = 100
-        vueltas_stint_plot = []
-        vidas_stint_plot = []
-
-        for v in range(vueltas_stint):
-            # Añadir punto de vida actual antes de degradar
-            vueltas_stint_plot.append(vuelta_actual)
-            vidas_stint_plot.append(vida_neumatico)
-
-            # Degradación
-            degradacion = degradaciones.get(tipo, degradaciones_personalizados.get(tipo, 0)) / 100
-            vida_neumatico *= (1 - degradacion)
-
-            # Avanzar vuelta
-            vuelta_actual += 1
-
-        fig.add_trace(go.Scatter(
-            x=vueltas_stint_plot,
-            y=vidas_stint_plot,
-            mode='lines+markers',
-            name=f"Stint {i+1}: {tipo}"
-        ))
+        for i, (tipo, vueltas_stint, vidas_stint) in enumerate(datos_grafico):
+            fig.add_trace(go.Scatter(
+                x=vueltas_stint,
+                y=vidas_stint,
+                mode='lines+markers',
+                name=f"Stint {i+1}: {tipo}"  # Aquí agregamos el número del stint
+            ))
 
     # Añadir la línea horizontal en el 50%
     fig.add_shape(
         type="line",
-        x0=0, x1=vuelta_actual,
-        y0=50, y1=50,
+        x0=0, x1=vueltas_totales,  # Desde la vuelta 0 hasta la última vuelta
+        y0=50, y1=50,  # Línea horizontal en y=50%
         line=dict(
             color="red",
             width=2,
