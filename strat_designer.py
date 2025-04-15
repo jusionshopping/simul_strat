@@ -79,6 +79,9 @@ if st.button("🚀 Calcular estrategia"):
             vidas_stint.append(vida_neumatico)
             vueltas_stint.append(vueltas_acumuladas + v + 1)
             vida_neumatico *= (1 - degradacion)
+        # ⬇️ Añadir un punto más: la vida del neumático después del stint
+        vidas_stint.append(vida_neumatico)
+        vueltas_stint.append(vueltas_acumuladas + vueltas)
             
         # Acumula datos para el gráfico
         if 'datos_grafico' not in locals():
@@ -104,19 +107,16 @@ if 'datos_grafico' in locals():
     vuelta_global = 0  # Para que las vueltas sean continuas entre stints
 
     for i, (tipo, vueltas_stint, vidas_stint) in enumerate(datos_grafico):
-        # Ajustar las vueltas para que comiencen desde la vuelta actual
-        vueltas_continuas = list(range(vuelta_global, vuelta_global + len(vidas_stint)))
-        # Añadimos una vuelta más para representar la vida tras la última vuelta del stint
-        vueltas_continuas.append(vueltas_continuas[-1] + 1)
-        vuelta_global = vueltas_continuas[-1]
-
-
         fig.add_trace(go.Scatter(
-            x=vueltas_continuas,
+            x=vueltas_stint,
             y=vidas_stint,
             mode='lines+markers',
             name=f"Stint {i+1}: {tipo}"
         ))
+    
+        # Actualizar la última vuelta mostrada
+        vuelta_global = vueltas_stint[-1]
+
 
     # Añadir la línea horizontal en el 50%
     fig.add_shape(
