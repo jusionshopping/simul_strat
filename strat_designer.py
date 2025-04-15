@@ -9,7 +9,7 @@ degradaciones = {}
 
 compuestos = ["SS", "S", "M", "H"]
 for c in compuestos:
-    tiempos[c] = st.number_input(f"Tiempo por vuelta con {c}", min_value=50, max_value=200.0, step=0.1)
+    tiempos[c] = st.number_input(f"Tiempo por vuelta con {c}", min_value=50.0, max_value=200.0, step=0.1)
     degradaciones[c] = st.number_input(f"Degradación por vuelta con {c} (%)", min_value=0, max_value=100, step=0)
 
 tiempo_boxes = st.number_input("Tiempo de parada en boxes (s)", min_value=0.0, step=0.1)
