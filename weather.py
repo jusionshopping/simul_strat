@@ -99,8 +99,14 @@ if st.button("Ver clima"):
         
         hora_forecast = datetime.utcfromtimestamp(entrada_mas_cercana['dt']).strftime("%d-%m-%Y %H:%M")
         
+        dt_forecast = datetime.utcfromtimestamp(entrada_mas_cercana['dt'])
+        inicio_franja = dt_forecast.strftime("%H:%M")
+        fin_franja = (dt_forecast + timedelta(hours=3)).strftime("%H:%M")
+        fecha_franja = dt_forecast.strftime("%d-%m-%Y")
+        
         st.subheader(f"Clima estimado más cercano a {fecha.strftime('%d-%m-%Y')} {hora.strftime('%H:%M')} UTC")
-        st.write(f"**Dato disponible a las**: {hora_forecast} UTC")
+        st.write(f"**Franja horaria de datos**: {fecha_franja} de {inicio_franja} a {fin_franja} UTC")
         st.write(f"**Temperatura**: {temperatura} °C")
         st.write(f"**Precipitación (últimas 3h)**: {lluvia} mm")
+
 
