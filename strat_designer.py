@@ -80,7 +80,7 @@ es_lluvia = st.checkbox("¿Carrera en lluvia?", value=es_lluvia_default)
 
 # Comp. estándar
 for c in compuestos:
-    tiempos[c] = st.number_input(f"Tiempo por vuelta con {c}", min_value=50.0, max_value=200.0, step=0.1,
+    tiempos[c] = st.number_input(f"Tiempo por vuelta con {c}", min_value=50.0, max_value=200.0, step=0.001,
                                  value=float(tiempos.get(c, 90.0)))  # Asegurarse de que sea float
     degradaciones[c] = st.number_input(f"Degradación por vuelta con {c} (%)", min_value=0, max_value=100, step=1,
                                        value=int(degradaciones.get(c, 5)))  # Si es entero, asegurarse de que sea int
@@ -89,7 +89,7 @@ for c in compuestos:
 if es_lluvia:
     st.subheader("Neumáticos personalizados (Lluvia)")
     for c in ["I (Intermedios)", "W (Mojados)"]:
-        tiempos_personalizados[c] = st.number_input(f"Tiempo por vuelta con {c}", min_value=50.0, max_value=200.0, step=0.1,
+        tiempos_personalizados[c] = st.number_input(f"Tiempo por vuelta con {c}", min_value=50.0, max_value=200.0, step=0.001,
                                                     value=float(tiempos_personalizados.get(c, 100.0)))  # Asegurarse de que sea float
         degradaciones_personalizados[c] = st.number_input(f"Degradación por vuelta con {c} (%)", min_value=0, max_value=100, step=1,
                                                           value=int(degradaciones_personalizados.get(c, 7)))  # Asegurarse de que sea int
