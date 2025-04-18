@@ -230,7 +230,7 @@ if stints:
         df_stint.to_excel(writer, sheet_name='Estrategia', index=False)
         df_resumen.to_excel(writer, sheet_name='Resumen', index=False)  # Guardar la nueva hoja
     excel_buffer.seek(0)
-    st.download_button("📥 Descargar datos en Excel", data=excel_buffer, file_name="estrategia_igp.xlsx",
+    st.download_button("📥 Descargar datos en Excel", data=excel_buffer, file_name="estrategia_igp_{fecha_actual}.xlsx",
                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
     # Imagen
@@ -253,5 +253,5 @@ if stints:
     plt.savefig(img_buffer, format='png')
     img_buffer.seek(0)
 
-    st.download_button("🖼️ Exportar imagen", data=img_buffer, file_name=f"estrategia_{fecha_actual}.png",
+    st.download_button("🖼️ Exportar imagen", data=img_buffer, file_name=f"estrategia_igp_{fecha_actual}.png",
                        mime="image/png")
