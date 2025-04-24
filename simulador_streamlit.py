@@ -1,75 +1,91 @@
 import streamlit as st
 import itertools
 
-def duracion_neum(degrad):
-    vida_neum = 100.0
-    vueltas = 0
-    durac = []
-    for porcentaje in degrad:
-        while vida_neum > 50:
-            vida_neum -= vida_neum * (porcentaje / 100)
-            vueltas += 1
-        durac.append(vueltas)
-        vida_neum = 100.0
-        vueltas = 0
-    return durac
-
+st.set_page_config(page_title="Simulación de Estrategias", layout="centered")
 st.title("🛞 Simulación de Estrategias")
 
-st.subheader("Configuración de neumáticos")
-neum = [st.text_input(f"Neumático {i+1}", value=n) for i, n in enumerate(['SS', 'S', 'M', 'H'])]
+# Valores predeterminados
+def_val_neumaticos = ['SS', 'S', 'M', 'H']
+def_val_duracion = [4, 7, 8, 11]
+def_val_tiempos = [100.5, 101.6, 102.4, 103.5]
 
-st.subheader("Parámetros técnicos")
-col1, col2, col3, col4 = st.columns(4)
-degrad = [col.number_input(f"Degradación {i+1} (%)", value=v, min_value=1.0, step=0.1)
-          for i, (col, v) in enumerate(zip((col1, col2, col3, col4), [18.0, 10.0, 8.0, 7.0]))]
+with st.form("parametros"):
+    st.subheader("Parámetros de los Neumáticos")
 
-col1, col2, col3, col4 = st.columns(4)
-tiempos = [col.number_input(f"Tiempo vuelta {i+1}", value=t, min_value=0.0, step=0.1)
-           for i, (col, t) in enumerate(zip((col1, col2, col3, col4), [101.5, 102.2, 103.1, 104.2]))]
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        neumatico1 = st.text_input("Neumático 1", value=def_val_neumaticos[0])
+        duracion1 = st.number_input("Duración 1", value=def_val_duracion[0], step=1)
+        tiempo1 = st.number_input("Tiempo 1", value=def_val_tiempos[0], format="%0.2f")
+    with col2:
+        neumatico2 = st.text_input("Neumático 2", value=def_val_neumaticos[1])
+        duracion2 = st.number_input("Duración 2", value=def_val_duracion[1], step=1)
+        tiempo2 = st.number_input("Tiempo 2", value=def_val_tiempos[1], format="%0.2f")
+    with col3:
+        neumatico3 = st.text_input("Neumático 3", value=def_val_neumaticos[2])
+        duracion3 = st.number_input("Duración 3", value=def_val_duracion[2], step=1)
+        tiempo3 = st.number_input("Tiempo 3", value=def_val_tiempos[2], format="%0.2f")
+    with col4:
+        neumatico4 = st.text_input("Neumático 4", value=def_val_neumaticos[3])
+        duracion4 = st.number_input("Duración 4", value=def_val_duracion[3], step=1)
+        tiempo4 = st.number_input("Tiempo 4", value=def_val_tiempos[3], format="%0.2f")
 
-tiempo_parada_boxes = st.number_input("⏱️ Tiempo de parada en boxes (s)", value=23.0, step=0.1)
-duracion_carrera = st.number_input("🏁 Duración total de la carrera (vueltas)", value=24, min_value=1)
+    tiempo_boxes = st.number_input("⏱️ Tiempo parada en boxes (s)", min_value=0, value=20, step=1)
+    duracion_carrera = st.number_input("🏁 Duración total de carrera (vueltas)", min_value=1, value=25, step=1)
 
-if st.button("🚀 Ejecutar simulación"):
+    submitted = st.form_submit_button("🚀 Ejecutar Simulación")
+
+if submitted:
     try:
-        race = [tiempo_parada_boxes, duracion_carrera]
-        durac = duracion_neum(degrad)
+        neumaticos = [neumatico1, neumatico2, neumatico3, neumatico4]
+        duraciones = [duracion1, duracion2, duracion3, duracion4]
+        tiempos = [tiempo1, tiempo2, tiempo3, tiempo4]
 
-        comb2 = list(itertools.product(range(len(durac)), repeat=2))
-        comb3 = list(itertools.product(range(len(durac)), repeat=3))
-        comb4 = list(itertools.product(range(len(durac)), repeat=4))
-        combs = comb2 + comb3 + comb4
-        combs = [c for c in combs if len(set(c)) > 1]
-        combs = [c for c in combs if sum(durac[i] for i in c) == race[1]]
+        duracion_neumaticos = dict(zip(neumaticos, duraciones))
+        tiempos_vuelta = dict(zip(neumaticos, tiempos))
 
-        combs_unicas = {}
-        for c in combs:
-            c_ordenada = tuple(sorted(c))
-            vueltas_totales = sum(durac[i] for i in c)
-            tiempo_total = sum(tiempos[i]*durac[i] for i in c) + race[0]*(len(c)-1)
-            v_sobrante = vueltas_totales - 25
-            tiempo_total -= (v_sobrante * tiempos[c[-1]])
-            tiempo_total = round(tiempo_total, 1)
-            if c_ordenada not in combs_unicas or combs_unicas[c_ordenada] > tiempo_total:
-                combs_unicas[c_ordenada] = tiempo_total
+        combinaciones_temporales = []
 
-        combs_final = {}
-        for c in combs_unicas:
-            tiempo_total = combs_unicas[c]
-            vueltasn = [durac[i] for i in c]
-            neumn = [neum[i] for i in c]
-            combs_final[tuple(neumn)] = vueltasn, tiempo_total
+        for num_stints in range(2, 5):
+            combinaciones = list(itertools.product(neumaticos, repeat=num_stints))
+            for combinacion in combinaciones:
+                if len(set(combinacion)) >= 2:
+                    stints = []
+                    vueltas_totales = 0
+                    for neumatico in combinacion:
+                        duracion = duracion_neumaticos[neumatico]
+                        stints.append((neumatico, duracion))
+                        vueltas_totales += duracion
+                    if vueltas_totales >= duracion_carrera:
+                        tiempo_total = 0
+                        vuelta_actual = 0
+                        for neumatico, duracion in stints:
+                            for _ in range(duracion):
+                                tiempo_total += tiempos_vuelta[neumatico]
+                                vuelta_actual += 1
+                                if vuelta_actual >= duracion_carrera:
+                                    break
+                            if vuelta_actual < duracion_carrera:
+                                tiempo_total += tiempo_boxes
+                        combinaciones_temporales.append((tuple(stints), tiempo_total))
 
-        strat_ordenadas = sorted(combs_final.items(), key=lambda x: x[1][1])
+        dict_mejores = {}
+        for stints, tiempo in combinaciones_temporales:
+            clave = tuple(sorted(stints))
+            if clave not in dict_mejores or tiempo < dict_mejores[clave][1]:
+                dict_mejores[clave] = (stints, tiempo)
+
+        mejores_resultados = sorted(dict_mejores.values(), key=lambda x: x[1])[:10]
 
         st.success("✅ Estrategias calculadas correctamente")
-        for n, (neumaticos, (vueltas, tiempo_total)) in enumerate(strat_ordenadas):
-            letra = chr(65 + n)
-            st.markdown(f"### Estrategia {letra}")
-            for i in range(len(neumaticos)):
-                st.write(f"• Stint {i+1}: Neumático `{neumaticos[i]}`, Parada tras **{vueltas[i]}** vueltas")
-            st.write(f"🕒 **Tiempo total de carrera:** `{tiempo_total} s`")
+        for i, (estrategia, tiempo_total) in enumerate(mejores_resultados, 1):
+            st.markdown(f"**Estrategia {i}:**")
+            vuelta_actual = 0
+            for j, (neumatico, duracion) in enumerate(estrategia, 1):
+                vuelta_final = min(vuelta_actual + duracion, duracion_carrera)
+                st.write(f"• Stint {j}: Neumático `{neumatico}`, Parada tras la vuelta **{vuelta_final}**")
+                vuelta_actual = vuelta_final
+            st.write(f"🕒 **Tiempo total de carrera:** `{tiempo_total:.2f} segundos`")
             st.markdown("---")
 
     except Exception as e:
