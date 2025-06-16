@@ -84,6 +84,7 @@ if st.button("Ver clima"):
         df['fecha_hora'] = pd.to_datetime(df['dt'], unit='s', utc=True)
         df['temp'] = df['main'].apply(lambda x: x['temp'])
         df['lluvia'] = df['rain'].apply(lambda x: x.get('3h', 0) if isinstance(x, dict) else 0)
+        df['humedad'] = df['main'].apply(lambda x: x['humidity'])
 
         hora_carrera_utc = datetime.combine(fecha, hora).replace(tzinfo=timezone.utc)
 
@@ -94,6 +95,7 @@ if st.button("Ver clima"):
 
         temperatura = entrada_mas_cercana['temp']
         lluvia = entrada_mas_cercana['lluvia']
+        humedad = entrada_mas_cercana['humedad']
         dt_forecast = entrada_mas_cercana['fecha_hora']
         inicio_franja = dt_forecast.strftime("%H:%M")
         fin_franja = (dt_forecast + timedelta(hours=3)).strftime("%H:%M")
@@ -103,6 +105,8 @@ if st.button("Ver clima"):
         st.write(f"**Franja horaria de datos**: {fecha_franja} de {inicio_franja} a {fin_franja} UTC")
         st.write(f"**Temperatura**: {temperatura} °C")
         st.write(f"**Precipitación (últimas 3h)**: {lluvia} mm")
+        st.write(f"**Humedad**: {humedad} %")
+
 
         # Gráfico con doble eje Y usando Plotly
         fig = go.Figure()
