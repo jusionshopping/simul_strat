@@ -81,13 +81,12 @@ if st.button("Ver clima"):
 
     if datos:
         df = pd.DataFrame(datos['list'])
+        if 'rain' not in df.columns:
+            df['rain'] = [{}] * len(df)  # crea la columna rain con diccionarios vacíos
         df['fecha_hora'] = pd.to_datetime(df['dt'], unit='s', utc=True)
         df['temp'] = df['main'].apply(lambda x: x['temp'])
         df['lluvia'] = df['rain'].apply(lambda x: x.get('3h', 0) if isinstance(x, dict) else 0)
         df['lluvia'] = df['main'].apply(lambda x: 0)  # valor por defecto
-        if 'rain' in df.columns:
-            df['lluvia'] = df['rain'].apply(lambda x: x.get('3h', 0) if isinstance(x, dict) else 0)
-
         df['humedad'] = df['main'].apply(lambda x: x['humidity'])
 
         hora_carrera_utc = datetime.combine(fecha, hora).replace(tzinfo=timezone.utc)
