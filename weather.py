@@ -59,7 +59,7 @@ st.title("🌤️ Clima de Circuitos de F1")
 circuito = st.selectbox("Selecciona el circuito", list(circuitos.keys()))
 
 # Seleccionar fecha
-fecha = st.date_input("Selecciona la fecha", min_value=datetime.today())
+fecha = st.date_input("Selecciona la fecha", value=datetime.today())
 
 # Usar `session_state` para recordar la hora seleccionada
 if "hora" not in st.session_state:
