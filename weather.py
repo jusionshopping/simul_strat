@@ -144,3 +144,42 @@ if st.button("Ver clima"):
         )
 
         st.plotly_chart(fig, use_container_width=True)
+    # Si la fecha es anterior a hoy, usar API histórica
+
+    if fecha < datetime.today().date():
+        st.info("Usando datos históricos (requiere suscripción de pago a OpenWeather)")
+    
+        fecha_hora_carrera = datetime.combine(fecha, hora)
+        datos_historicos = obtener_clima_historico(lat, lon, fecha_hora_carrera)
+    
+        if datos_historicos:
+            actual = datos_historicos['data'][0]  # Tomamos el dato más cercano
+            temperatura = actual['temp']
+            humedad = actual['humidity']
+            lluvia = actual.get('rain', {}).get('1h', 0)  # Puede no estar presente
+    
+            st.subheader(f"🌤️ Clima histórico para {fecha.strftime('%d-%m-%Y')} a las {hora.strftime('%H:%M')}")
+            st.write(f"**Temperatura**: {temperatura} °C")
+            st.write(f"**Humedad**: {humedad} %")
+            st.write(f"**Lluvia**: {lluvia} mm")
+
+import time
+def obtener_clima_historico(lat, lon, fecha_datetime):
+    timestamp = int(time.mktime(fecha_datetime.timetuple()))
+    
+    url = "https://api.openweathermap.org/data/3.0/onecall/timemachine"
+    params = {
+        'lat': lat,
+        'lon': lon,
+        'dt': timestamp,
+        'appid': API_KEY,
+        'units': 'metric'
+    }
+    
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        st.error("No se pudo obtener el clima histórico. Verifica tu suscripción y datos.")
+        return None
+
